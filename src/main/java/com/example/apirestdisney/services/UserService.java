@@ -30,4 +30,23 @@ public class UserService {
         userEntity.setToken(crearToken(userEntity));
         userRepository.save(userEntity);
     }
+
+    public String login(String email, String token) {
+        UserEntity userEntity = userRepository.findUserByEmailandToken(email, token);
+        if(userEntity != null){
+            userEntity.setTokenTemporal(String.valueOf((Math.round(Math.random()+1000)+1)));
+            userRepository.save(userEntity);
+            return userEntity.getTokenTemporal();
+        }
+        return "Error de acceso";
+    }
+
+    public boolean valiteTemporalAndCountApiCall(String email, String tokenTemporal) {
+        UserEntity userEntity = userRepository.findUserByEmailandToken(email, tokenTemporal);
+        if(userEntity!= null && userEntity.getApiCallsAvailable()>0){
+            userEntity.descontarCall();
+            userRepository.save(userEntity);
+        }
+        return false;
+    }
 }

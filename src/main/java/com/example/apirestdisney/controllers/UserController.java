@@ -3,10 +3,7 @@ package com.example.apirestdisney.controllers;
 import com.example.apirestdisney.entities.UserEntity;
 import com.example.apirestdisney.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -25,6 +22,10 @@ public class UserController {
         userService.save(userEntity);
         String token = userService.crearToken(userEntity);
         return token;
+    }
 
+    @PostMapping(path = "login", consumes = "application/json")
+    public String login(@RequestParam String mail, @RequestParam String token){
+        return userService.login(mail, token);
     }
 }
